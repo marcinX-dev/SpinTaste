@@ -8,7 +8,7 @@ def get_db_connection():
     conn = sqlite3.connect('meals.db')
     conn.row_factory = sqlite3.Row
     return conn
-
+#test
 @app.route('/')
 def index():
     return render_template('index.html')
