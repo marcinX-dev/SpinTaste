@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block additional_head %}
+<style>
+    .meal-card {
+        border: 3px solid #ffcc00;
+        border-radius: 15px;
+        transition: transform 0.3s;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    .meal-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .meal-image {
+        height: 200px;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: #6c757d;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .btn-spin {
+        background-color: #ffcc00;
+        border: none;
+        color: #212529;
+        font-weight: bold;
+        border-radius: 25px;
+        padding: 8px 25px;
+        transition: all 0.3s;
+    }
+
+    .btn-spin:hover {
+        background-color: #ffc107;
+        transform: scale(1.05);
+    }
+
+    .category-title {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-weight: bold;
+    }
+
+    .modal-header {
+        background-color: #ffcc00;
+        color: #212529;
+    }
+
+    .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #ffcc00;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .category-options {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .checkbox-container {
+        margin: 0 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        <h1 class="display-4">SpinTaste</h1>
+        <p class="lead">Nie wiesz co zjeść? Losuj posiłek i zaskocz swoje kubki smakowe!</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="meal-card p-3">
+            <h2 class="category-title">Kolacja</h2>
+            <div class="meal-image mb-3">
+                <span>Losowy obraz posiłku</span>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-spin" data-category="kolacja">LOSUJ</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="meal-card p-3">
+            <h2 class="category-title">Obiad</h2>
+            <div class="meal-image mb-3">
+                <span>Losowy obraz posiłku</span>
+            </div>
+
+            <div class="category-options">
+                <div class="checkbox-container">
+                    <input type="checkbox" class="form-check-input" id="elegant-option" name="meal-type"
+                        value="elegancki">
+                    <label class="form-check-label" for="elegant-option">Elegancki</label>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" class="form-check-input" id="quick-option" name="meal-type" value="szybki">
+                    <label class="form-check-label" for="quick-option">Szybki</label>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-spin" data-category="obiad">LOSUJ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4 mb-5">
+    <div class="col-12 text-center">
+        <a href="{{ url_for('lista_przepisow') }}" class="btn btn-outline-primary">Lista przepisów</a>
+    </div>
+</div>
+
+<!-- Modal dla wylosowanego posiłku -->
+<div class="modal fade" id="mealModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Wylosowany posiłek</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="loading-spinner" class="text-center">
+                    <div class="loader"></div>
+                    <p>Losowanie posiłku...</p>
+                </div>
+                <div id="meal-details" style="display: none;">
+                    <h3 id="meal-name" class="mb-3"></h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-light">
+                                    <h5>Składniki</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul id="meal-ingredients" class="list-group list-group-flush">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h5>Kategoria</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p id="meal-category"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-3">
+                        <div class="card-header bg-light">
+                            <h5>Przepis</h5>
+                        </div>
+                        <div class="card-body">
+                            <p id="meal-preparation"></p>
+                        </div>
+                    </div>
+                </div>
+                <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                <button type="button" class="btn btn-primary" id="try-again" style="display: none;">Losuj
+                    ponownie</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        const mealModal = new bootstrap.Modal(document.getElementById('mealModal'));
+        const loadingSpinner = $('#loading-spinner');
+        const mealDetails = $('#meal-details');
+        const errorMessage = $('#error-message');
+        const tryAgainBtn = $('#try-again');
+
+        // Walidacja checkboxów (tylko jeden może być zaznaczony)
+        $('input[name="meal-type"]').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('input[name="meal-type"]').not(this).prop('checked', false);
+            }
+        });
+
+        // Funkcja losująca posiłek
+        $('.btn-spin').on('click', function () {
+            let baseCategory = $(this).data('category');
+            let category = baseCategory;
+
+            // Sprawdzamy opcje dla obiadu
+            if (baseCategory === 'obiad') {
+                if ($('#elegant-option').is(':checked')) {
+                    category = 'wykwintny obiad';
+                } else if ($('#quick-option').is(':checked')) {
+                    category = 'szybki obiad';
+                }
+            }
+
+            // Resetujemy stan modalu
+            loadingSpinner.show();
+            mealDetails.hide();
+            errorMessage.hide();
+            tryAgainBtn.hide();
+
+            // Otwieramy modal
+            mealModal.show();
+
+            // Wysyłamy zapytanie do API
+            $.ajax({
+                url: '/random_meal',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ category: category }),
+                success: function (response) {
+                    loadingSpinner.hide();
+
+                    // Wypełniamy dane posiłku
+                    $('#meal-name').text(response.name);
+
+                    // Przetwarzamy składniki (zakładamy, że są oddzielone przecinkami)
+                    const ingredientsList = $('#meal-ingredients');
+                    ingredientsList.empty();
+
+                    const ingredients = response.ingredients.split(',');
+                    ingredients.forEach(ingredient => {
+                        ingredientsList.append(`<li class="list-group-item">${ingredient.trim()}</li>`);
+                    });
+
+                    $('#meal-category').text(response.category);
+                    $('#meal-preparation').text(response.recipe);
+
+                    mealDetails.show();
+                },
+                error: function (xhr) {
+                    loadingSpinner.hide();
+
+                    // Wyświetlamy błąd
+                    let errorText = 'Wystąpił błąd podczas losowania posiłku.';
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorText = xhr.responseJSON.error;
+                    }
+
+                    errorMessage.text(errorText).show();
+                    tryAgainBtn.show();
+                }
+            });
+        });
+
+        // Przycisk ponownego losowania
+        tryAgainBtn.on('click', function () {
+            // Zamykamy aktualny modal
+            mealModal.hide();
+
+            // Symulujemy kliknięcie w ostatnio użyty przycisk losujący
+            setTimeout(function () {
+                $('.btn-spin').last().click();
+            }, 500);
+        });
+    });
+</script>
+{% endblock %}

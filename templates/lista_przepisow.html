@@ -1,0 +1,366 @@
+{% extends "base.html" %}
+
+{% block additional_head %}
+<style>
+    .recipe-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+    }
+
+    .recipe-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .recipe-img-placeholder {
+        height: 160px;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        border-radius: 4px;
+    }
+
+    .category-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .filters {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .action-buttons .btn {
+        flex-basis: 48%;
+    }
+
+    /* Styl dla modalu potwierdzenia usunięcia */
+    .modal-header.bg-danger {
+        background-color: #dc3545 !important;
+    }
+
+    #deleteConfirmModal .modal-content {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #deleteConfirmModal .modal-header {
+        padding: 15px 20px;
+        border-bottom: none;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    #deleteConfirmModal .modal-body {
+        padding: 20px;
+    }
+
+    #deleteConfirmModal .modal-footer {
+        border-top: none;
+        padding: 15px 20px;
+    }
+
+    #deleteConfirmModal .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        font-weight: 500;
+        padding: 8px 20px;
+        border-radius: 5px;
+    }
+
+    #deleteConfirmModal .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        font-weight: 500;
+        padding: 8px 20px;
+        border-radius: 5px;
+    }
+
+    #deleteConfirmModal .fa-exclamation-triangle {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-5">Lista przepisów</h1>
+        <p class="lead">Przeglądaj wszystkie dostępne przepisy w naszej bazie</p>
+    </div>
+</div>
+
+<div class="filters">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label for="category-filter" class="form-label">Filtruj według kategorii:</label>
+                <select class="form-select" id="category-filter">
+                    <option value="all">Wszystkie kategorie</option>
+                    <option value="obiad">Obiad</option>
+                    <option value="wykwintny obiad">Wykwintny obiad</option>
+                    <option value="szybki obiad">Szybki obiad</option>
+                    <option value="kolacja">Kolacja</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="search-input" class="form-label">Szukaj przepisu:</label>
+                <input type="text" class="form-control" id="search-input" placeholder="Wpisz nazwę przepisu...">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="recipes-container">
+    {% for meal in meals %}
+    <div class="col-md-4 mb-4 recipe-item" data-category="{{ meal.category }}" data-name="{{ meal.name|lower }}">
+        <div class="card recipe-card">
+            <div class="recipe-img-placeholder">
+                <i class="fas fa-utensils fa-3x"></i>
+            </div>
+            <div class="card-body">
+                <span
+                    class="badge {% if 'wykwintny' in meal.category %}bg-danger{% elif 'szybki' in meal.category %}bg-success{% else %}bg-primary{% endif %} category-badge">
+                    {{ meal.category }}
+                </span>
+                <h5 class="card-title mt-2">{{ meal.name }}</h5>
+                <p class="card-text small text-muted">
+                    Składniki:
+                    {% set ingredients_list = meal.ingredients.split(',') %}
+                    {% for ingredient in ingredients_list[:3] %}
+                    {{ ingredient.strip() }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    {% if ingredients_list|length > 3 %}...{% endif %}
+                </p>
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-outline-primary view-recipe" data-id="{{ meal.id }}"
+                        data-name="{{ meal.name }}" data-category="{{ meal.category }}" data-recipe="{{ meal.recipe }}"
+                        data-ingredients="{{ meal.ingredients }}">
+                        Zobacz przepis
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger delete-recipe" data-id="{{ meal.id }}"
+                        data-name="{{ meal.name }}">
+                        Usuń przepis
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div id="no-results" class="alert alert-info text-center" style="display: none;">
+            Nie znaleziono przepisów spełniających kryteria wyszukiwania.
+        </div>
+    </div>
+</div>
+
+<!-- Modal ze szczegółami przepisu -->
+<div class="modal fade" id="recipeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="recipe-modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h5>Składniki</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul id="recipe-ingredients" class="list-group list-group-flush"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h5>Kategoria</h5>
+                            </div>
+                            <div class="card-body">
+                                <p id="recipe-category"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-header bg-light">
+                        <h5>Przepis</h5>
+                    </div>
+                    <div class="card-body">
+                        <p id="recipe-preparation"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal potwierdzenia usunięcia -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Potwierdź usunięcie</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="fs-5">Czy na pewno chcesz usunąć przepis <strong id="delete-recipe-name"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete">Usuń</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        const recipeModal = new bootstrap.Modal(document.getElementById('recipeModal'));
+        const deleteConfirmModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        let recipeToDeleteId = null;
+        let recipeToDeleteElement = null;
+
+        // Filtrowanie przepisów po kategorii
+        $('#category-filter').on('change', function () {
+            filterRecipes();
+        });
+
+        // Wyszukiwanie przepisów po nazwie
+        $('#search-input').on('input', function () {
+            filterRecipes();
+        });
+
+        // Funkcja filtrująca przepisy
+        function filterRecipes() {
+            const categoryFilter = $('#category-filter').val();
+            const searchInput = $('#search-input').val().toLowerCase();
+            let visibleCount = 0;
+
+            $('.recipe-item').each(function () {
+                const category = $(this).data('category');
+                const name = $(this).data('name');
+
+                const categoryMatch = categoryFilter === 'all' || category === categoryFilter;
+                const nameMatch = name.includes(searchInput);
+
+                if (categoryMatch && nameMatch) {
+                    $(this).show();
+                    visibleCount++;
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            // Pokazujemy komunikat, jeśli nie ma wyników
+            if (visibleCount === 0) {
+                $('#no-results').show();
+            } else {
+                $('#no-results').hide();
+            }
+        }
+
+        // Obsługa przycisku "Zobacz przepis"
+        $('.view-recipe').on('click', function () {
+            // Pobieramy dane bezpośrednio z atrybutów data
+            const name = $(this).data('name');
+            const category = $(this).data('category');
+            const recipe = $(this).data('recipe');
+            const ingredients = $(this).data('ingredients');
+
+            // Wypełniamy modal danymi przepisu
+            $('#recipe-modal-title').text(name);
+
+            // Przetwarzamy składniki
+            const ingredientsList = $('#recipe-ingredients');
+            ingredientsList.empty();
+
+            const ingredientsArray = ingredients.split(',');
+            ingredientsArray.forEach(function (ingredient) {
+                ingredientsList.append('<li class="list-group-item">' + ingredient.trim() + '</li>');
+            });
+
+            $('#recipe-category').text(category);
+            $('#recipe-preparation').text(recipe);
+
+            // Otwieramy modal
+            recipeModal.show();
+        });
+
+        // Obsługa przycisku usuwania przepisu
+        $('.delete-recipe').on('click', function () {
+            const recipeId = $(this).data('id');
+            const recipeName = $(this).data('name');
+
+            // Zapisujemy ID przepisu do usunięcia i element
+            recipeToDeleteId = recipeId;
+            recipeToDeleteElement = $(this).closest('.recipe-item');
+
+            // Wyświetlamy nazwę przepisu w modalu potwierdzenia
+            $('#delete-recipe-name').text(recipeName);
+
+            // Otwieramy modal potwierdzenia
+            deleteConfirmModal.show();
+        });
+
+        // Obsługa przycisku potwierdzenia usunięcia
+        $('#confirm-delete').on('click', function () {
+            if (recipeToDeleteId) {
+                // Wysyłamy żądanie usunięcia przepisu
+                $.ajax({
+                    url: '/usun_przepis/' + recipeToDeleteId,
+                    method: 'POST',
+                    success: function (response) {
+                        // Zamykamy modal potwierdzenia
+                        deleteConfirmModal.hide();
+
+                        // Usuwamy element z DOM bez przeładowywania strony
+                        if (recipeToDeleteElement) {
+                            recipeToDeleteElement.fadeOut(300, function () {
+                                $(this).remove();
+                                // Jeśli nie ma już widocznych przepisów, pokazujemy komunikat
+                                if ($('.recipe-item:visible').length === 0) {
+                                    $('#no-results').show();
+                                }
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        // Wyświetlamy komunikat o błędzie
+                        alert('Wystąpił błąd podczas usuwania przepisu.');
+                        console.error(xhr.responseText);
+
+                        // Zamykamy modal
+                        deleteConfirmModal.hide();
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

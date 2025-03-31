@@ -1,0 +1,8 @@
+# Środowisko wirtualne
+venv/
+.venv/
+# Pliki cache
+__pycache__/
+*.pyc
+# Pliki konfiguracyjne edytora
+.vscode/

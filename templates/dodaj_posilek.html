@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block additional_head %}
+<style>
+    .form-container {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    .form-header {
+        margin-bottom: 25px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+    }
+
+    .btn-submit {
+        background-color: #ffcc00;
+        border: none;
+        color: #212529;
+        font-weight: bold;
+        padding: 10px 25px;
+        transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+        background-color: #ffc107;
+        transform: scale(1.05);
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .alert-success {
+        animation: fadeOut 5s forwards;
+    }
+
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+        }
+
+        70% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-5">Dodaj nowy posiłek</h1>
+        <p class="lead">Uzupełnij formularz, aby dodać nowy przepis do bazy danych</p>
+    </div>
+</div>
+
+{% if success %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    Posiłek został pomyślnie dodany do bazy danych!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+{% if error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<div class="form-container">
+    <div class="form-header">
+        <h3><i class="fas fa-utensils me-2"></i>Informacje o posiłku</h3>
+    </div>
+
+    <form method="POST" action="{{ url_for('dodaj_posilek') }}">
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Nazwa posiłku</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-pencil-alt"></i></span>
+                    <input type="text" class="form-control" id="name" name="name" required
+                        placeholder="Np. Spaghetti Bolognese">
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="category" class="form-label">Kategoria</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                    <select class="form-select" id="category" name="category" required>
+                        <option value="" disabled selected>Wybierz kategorię...</option>
+                        <option value="obiad">Obiad</option>
+                        <option value="wykwintny obiad">Wykwintny obiad</option>
+                        <option value="szybki obiad">Szybki obiad</option>
+                        <option value="kolacja">Kolacja</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="ingredients" class="form-label">Składniki</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-shopping-basket"></i></span>
+                <textarea class="form-control" id="ingredients" name="ingredients" rows="3" required
+                    placeholder="Podaj składniki oddzielone przecinkami. Np. 300g makaronu, 500g mięsa mielonego, 2 cebule, 3 ząbki czosnku"></textarea>
+            </div>
+            <small class="text-muted">Podaj składniki oddzielone przecinkami</small>
+        </div>
+
+        <div class="mb-4">
+            <label for="recipe" class="form-label">Przepis</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-list-ol"></i></span>
+                <textarea class="form-control" id="recipe" name="recipe" rows="6" required
+                    placeholder="Opisz krok po kroku, jak przygotować posiłek..."></textarea>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="goals" class="form-label">Cele (opcjonalnie)</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-bullseye"></i></span>
+                <input type="text" class="form-control" id="goals" name="goals" placeholder="Np. masa, redukcja">
+            </div>
+            <small class="text-muted">Określ, do jakich celów dietetycznych pasuje ten posiłek</small>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="reset" class="btn btn-outline-secondary me-md-2">Wyczyść</button>
+            <button type="submit" class="btn btn-submit">Dodaj posiłek</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        // Automatyczne ukrywanie alertu sukcesu po 5 sekundach
+        setTimeout(function () {
+            $('.alert-success').alert('close');
+        }, 5000);
+
+        // Walidacja formularza
+        $('form').on('submit', function (e) {
+            let isValid = true;
+
+            // Sprawdzanie pól wymaganych
+            $(this).find('[required]').each(function () {
+                if ($(this).val() === '') {
+                    isValid = false;
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Wypełnij wszystkie wymagane pola!');
+            }
+        });
+
+        // Usuwanie klasy is-invalid po wpisaniu wartości
+        $('[required]').on('input change', function () {
+            if ($(this).val() !== '') {
+                $(this).removeClass('is-invalid');
+            }
+        });
+    });
+</script>
+{% endblock %}
