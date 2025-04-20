@@ -99,6 +99,13 @@
             <div class="meal-image mb-3">
                 <span>Losowy obraz posiłku</span>
             </div>
+            <!-- Pusty div o tej samej wysokości co category-options -->
+            <div class="category-options invisible">
+                <div class="checkbox-container">
+                    <input type="checkbox" class="form-check-input" disabled>
+                    <label class="form-check-label">Placeholder</label>
+                </div>
+            </div>
             <div class="text-center">
                 <button class="btn btn-spin" data-category="kolacja">LOSUJ</button>
             </div>
@@ -188,8 +195,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
-                <button type="button" class="btn btn-primary" id="try-again" style="display: none;">Losuj
-                    ponownie</button>
             </div>
         </div>
     </div>

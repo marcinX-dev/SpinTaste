@@ -201,6 +201,20 @@ h6 {
 	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
+.view-recipe {
+	border: 1px solid #333 !important;
+	color: #333 !important;
+	background-color: white !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+}
+
+.view-recipe:hover {
+	background-color: #f8c200 !important;
+	color: white !important;
+	border-color: #3498db !important;
+}
+
 /* Modal Styling */
 .modal-content {
 	border-radius: 15px;
@@ -302,4 +316,7 @@ footer p {
 	100% {
 		transform: rotate(360deg);
 	}
+}
+footer p {
+	color: #333;
 }
