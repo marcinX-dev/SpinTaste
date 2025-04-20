@@ -1,4 +1,4 @@
-/* Global Styles */
+/* ==================== GLOBALNE STYLE ==================== */
 body {
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	position: relative;
@@ -25,26 +25,7 @@ body::before {
 	position: relative;
 }
 
-/* Navbar Styling - Zmieniony na ciemniejszy z akcentem złotym */
-.navbar {
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-	background-color: rgba(25, 25, 25, 0.9) !important;
-}
-
-.navbar-brand {
-	font-weight: bold;
-	font-size: 1.5rem;
-	color: #ffcc00 !important;
-}
-
-.navbar-dark .navbar-nav .nav-link {
-	color: #fff !important;
-}
-
-.navbar-dark .navbar-nav .nav-link:hover {
-	color: #ffcc00 !important;
-}
-
+/* ==================== NAGŁÓWKI I TEKSTY ==================== */
 /* Heading Styling - Wszystkie nagłówki poza specjalnymi kontenerami */
 h1,
 h2,
@@ -77,7 +58,14 @@ h6 {
 .modal-content h4,
 .modal-content h5,
 .modal-content h6,
-.modal-content p {
+.modal-content p,
+.form-container h1,
+.form-container h2,
+.form-container h3,
+.form-container h4,
+.form-container h5,
+.form-container h6,
+.form-container p {
 	color: #333;
 }
 
@@ -100,7 +88,28 @@ h6 {
 	text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* Card Styling */
+/* ==================== NAVBAR ==================== */
+.navbar {
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+	background-color: rgba(25, 25, 25, 0.9) !important;
+}
+
+.navbar-brand {
+	font-weight: bold;
+	font-size: 1.5rem;
+	color: #ffcc00 !important;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+	color: #fff !important;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+	color: #ffcc00 !important;
+}
+
+/* ==================== KARTY (CARDS) ==================== */
+/* Ogólne style dla kart */
 .card {
 	border-radius: 10px;
 	overflow: hidden;
@@ -115,13 +124,12 @@ h6 {
 	border-bottom: 2px solid #ffcc00;
 }
 
-/* Meal Card Styling - Poprawione style kart posiłków */
+/* ==================== KARTY POSIŁKÓW (MEAL CARDS) ==================== */
 .meal-card {
 	border: 3px solid #ffcc00;
 	border-radius: 15px;
 	transition: transform 0.3s;
 	height: 100%;
-	cursor: pointer;
 	background-color: white;
 	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
@@ -151,7 +159,66 @@ h6 {
 	border-radius: 8px;
 }
 
-/* Button Styling - Poprawione przyciski */
+/* Checkboxy dla opcji posiłków */
+.category-options {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 20px;
+}
+
+.checkbox-container {
+	margin: 0 10px;
+}
+
+.form-check-input:checked {
+	background-color: #ffcc00;
+	border-color: #ffcc00;
+}
+
+/* ==================== KARTY PRZEPISÓW (RECIPE CARDS) ==================== */
+.recipe-card {
+	transition: transform 0.3s, box-shadow 0.3s;
+	height: 100%;
+}
+
+.recipe-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-img-placeholder {
+	height: 160px;
+	background-color: #f8f9fa;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #6c757d;
+	border-radius: 4px;
+}
+
+.category-badge {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+.filters {
+	background-color: #f8f9fa;
+	border-radius: 10px;
+	padding: 20px;
+	margin-bottom: 30px;
+}
+
+.action-buttons {
+	display: flex;
+	justify-content: space-between;
+}
+
+.action-buttons .btn {
+	flex-basis: 48%;
+}
+
+/* ==================== PRZYCISKI (BUTTONS) ==================== */
 .btn {
 	border-radius: 5px;
 	padding: 8px 20px;
@@ -185,6 +252,7 @@ h6 {
 	color: #333;
 }
 
+/* Przycisk LOSUJ */
 .btn-spin {
 	background-color: #ffcc00;
 	border: none;
@@ -193,14 +261,31 @@ h6 {
 	padding: 10px 30px;
 	font-size: 1.1rem;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	border-radius: 25px;
 }
 
 .btn-spin:hover {
 	background-color: #f8c200;
-	transform: translateY(-3px);
+	transform: scale(1.05);
 	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Przycisk Dodaj posiłek */
+.btn-submit {
+	background-color: #ffcc00;
+	border: none;
+	color: #212529;
+	font-weight: bold;
+	padding: 10px 25px;
+	transition: all 0.3s;
+}
+
+.btn-submit:hover {
+	background-color: #ffc107;
+	transform: scale(1.05);
+}
+
+/* Przyciski w liście przepisów */
 .view-recipe {
 	border: 1px solid #333 !important;
 	color: #333 !important;
@@ -215,7 +300,7 @@ h6 {
 	border-color: #3498db !important;
 }
 
-/* Modal Styling */
+/* ==================== MODALS ==================== */
 .modal-content {
 	border-radius: 15px;
 	overflow: hidden;
@@ -227,6 +312,7 @@ h6 {
 	border-bottom: 1px solid #eee;
 	background-color: #ffcc00;
 	color: #333;
+	padding: 15px 20px;
 }
 
 .modal-header h5 {
@@ -237,36 +323,90 @@ h6 {
 	border-top: 1px solid #eee;
 }
 
-/* List Styling */
-.list-group-item {
-	border-left: none;
-	border-right: none;
-	padding: 12px 15px;
+.modal-body {
+	padding: 20px;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-	.meal-card {
-		margin-bottom: 20px;
-	}
-
-	.modal-dialog {
-		margin: 10px;
-	}
+/* Modal dla potwierdzenia usunięcia */
+.modal-header.bg-danger {
+	background-color: #dc3545 !important;
 }
 
-/* Animations */
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
+#deleteConfirmModal .modal-content {
+	border: none;
+	border-radius: 8px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+#deleteConfirmModal .modal-header {
+	padding: 15px 20px;
+	border-bottom: none;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+
+#deleteConfirmModal .modal-footer {
+	border-top: none;
+	padding: 15px 20px;
+}
+
+#deleteConfirmModal .btn-secondary {
+	background-color: #6c757d;
+	border-color: #6c757d;
+	font-weight: 500;
+	padding: 8px 20px;
+	border-radius: 5px;
+}
+
+#deleteConfirmModal .btn-danger {
+	background-color: #dc3545;
+	border-color: #dc3545;
+	font-weight: 500;
+	padding: 8px 20px;
+	border-radius: 5px;
+}
+
+#deleteConfirmModal .fa-exclamation-triangle {
+	color: #dc3545;
+}
+
+/* ==================== FORMULARZE ==================== */
+.form-container {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+	padding: 30px;
+	margin-bottom: 30px;
+}
+
+.form-header {
+	margin-bottom: 25px;
+	border-bottom: 1px solid #eee;
+	padding-bottom: 15px;
+}
+
+.input-group-text {
+	background-color: #f8f9fa;
+}
+
+.form-label {
+	font-weight: 500;
+}
+
+.alert-success {
+	animation: fadeOut 5s forwards;
+}
+
+@keyframes fadeOut {
+	0% {
 		opacity: 1;
 	}
-}
-
-.fade-in {
-	animation: fadeIn 0.5s ease-in;
+	70% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
 }
 
 /* Custom Form Controls */
@@ -276,29 +416,14 @@ h6 {
 	border-color: #ffcc00;
 }
 
-/* Footer Styling */
-footer {
-	margin-top: 50px;
-	border-top: 1px solid #eee;
-	background-color: rgba(25, 25, 25, 0.9);
-	padding: 20px 0;
+/* ==================== LISTY ==================== */
+.list-group-item {
+	border-left: none;
+	border-right: none;
+	padding: 12px 15px;
 }
 
-footer p {
-	color: white;
-}
-
-/* Checkbox container styling */
-.checkbox-container {
-	margin: 0 10px;
-}
-
-.form-check-input:checked {
-	background-color: #ffcc00;
-	border-color: #ffcc00;
-}
-
-/* Loader styling */
+/* ==================== LOADER I ANIMACJE ==================== */
 .loader {
 	border: 5px solid #f3f3f3;
 	border-top: 5px solid #ffcc00;
@@ -317,6 +442,39 @@ footer p {
 		transform: rotate(360deg);
 	}
 }
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.fade-in {
+	animation: fadeIn 0.5s ease-in;
+}
+
+/* ==================== FOOTER ==================== */
+footer {
+	margin-top: 50px;
+	border-top: 1px solid #eee;
+	background-color: rgba(25, 25, 25, 0.9);
+	padding: 20px 0;
+}
+
 footer p {
 	color: #333;
+}
+
+/* ==================== RESPONSYWNOŚĆ ==================== */
+@media (max-width: 768px) {
+	.meal-card {
+		margin-bottom: 20px;
+	}
+
+	.modal-dialog {
+		margin: 10px;
+	}
 }
