@@ -1,8 +1,20 @@
 /* ==================== GLOBALNE STYLE ==================== */
+html,
+body {
+	height: 100%;
+	margin: 0;
+}
 body {
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	position: relative;
 	color: #333;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+.container.py-4 {
+	flex: 1 0 auto;
 }
 
 /* Tło z ciemną nakładką */
@@ -492,6 +504,9 @@ footer {
 	border-top: 1px solid #eee;
 	background-color: rgba(25, 25, 25, 0.9);
 	padding: 20px 0;
+	flex-shrink: 0;
+	width: 100%;
+	margin-top: 0;
 }
 
 footer p {
