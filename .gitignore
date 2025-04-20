@@ -6,3 +6,4 @@ __pycache__/
 *.pyc
 # Pliki konfiguracyjne edytora
 .vscode/
+meals.db
