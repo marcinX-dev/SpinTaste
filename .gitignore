@@ -1,9 +1,14 @@
 # Środowisko wirtualne
 venv/
 .venv/
+.env
 # Pliki cache
 __pycache__/
 *.pyc
 # Pliki konfiguracyjne edytora
 .vscode/
+# baza danych SQLite
 meals.db
+# Pliki konfiguracyjne do konta
+generate_password.py
+generate_user.py

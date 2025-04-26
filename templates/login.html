@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block additional_head %}
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .login-header i {
+        color: #007bff;
+        font-size: 3rem;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .login-header h2 {
+        font-weight: 600;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .input-group-text {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+    .btn-login {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 0;
+        font-weight: 600;
+        border: none;
+        border-radius: 5px;
+        display: block;
+        width: 100%;
+        margin-top: 30px;
+    }
+
+    .btn-login:hover {
+        background-color: #0069d9;
+        color: white;
+    }
+
+    .remember-me {
+        display: flex;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    .remember-me input {
+        margin-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-header">
+        <i class="fas fa-utensils"></i>
+        <h2>SpinTaste</h2>
+        <p class="text-muted">Zaloguj się, aby kontynuować</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-info" role="alert">
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-group">
+            <label for="username" class="form-label">Nazwa użytkownika</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Nazwa użytkownika"
+                    required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password" class="form-label">Hasło</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Hasło" required>
+            </div>
+        </div>
+
+        <div class="remember-me">
+            <input type="checkbox" id="remember" name="remember">
+            <label for="remember">Zapamiętaj mnie</label>
+        </div>
+
+        <button type="submit" class="btn btn-login">Zaloguj się</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        // Autofocus na polu użytkownika
+        $('#username').focus();
+
+        // Automatycznie ukrywanie alertów po 5 sekundach
+        setTimeout(function () {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    });
+</script>
+{% endblock %}
