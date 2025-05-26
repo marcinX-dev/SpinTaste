@@ -457,7 +457,6 @@ h6 {
 	box-shadow: 0 0 0 0.25rem rgba(255, 204, 0, 0.25);
 	border-color: #ffcc00;
 }
-
 /* ==================== LISTY ==================== */
 .list-group-item {
 	border-left: none;
@@ -522,4 +521,14 @@ footer p {
 	.modal-dialog {
 		margin: 10px;
 	}
+}
+textarea.form-control {
+	white-space: pre-wrap !important;
+	line-height: 1.4 !important;
+	tab-size: 4;
+}
+
+#meal-preparation,
+#recipe-preparation {
+	white-space: pre-wrap !important;
 }

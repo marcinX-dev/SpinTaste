@@ -171,14 +171,10 @@
                     // Wypełniamy dane posiłku
                     $('#meal-name').text(response.name);
 
-                    // Przetwarzamy składniki (zakładamy, że są oddzielone przecinkami)
+                    // Wyświetlamy składniki z zachowanym formatowaniem
                     const ingredientsList = $('#meal-ingredients');
                     ingredientsList.empty();
-
-                    const ingredients = response.ingredients.split(',');
-                    ingredients.forEach(ingredient => {
-                        ingredientsList.append(`<li class="list-group-item">${ingredient.trim()}</li>`);
-                    });
+                    ingredientsList.append(`<div style="white-space: pre-wrap;">${response.ingredients}</div>`);
 
                     $('#meal-category').text(response.category);
                     $('#meal-preparation').text(response.recipe);

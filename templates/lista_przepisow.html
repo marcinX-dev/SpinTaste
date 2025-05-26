@@ -210,10 +210,7 @@
             const ingredientsList = $('#recipe-ingredients');
             ingredientsList.empty();
 
-            const ingredientsArray = ingredients.split(',');
-            ingredientsArray.forEach(function (ingredient) {
-                ingredientsList.append('<li class="list-group-item">' + ingredient.trim() + '</li>');
-            });
+            ingredientsList.append('<div style="white-space: pre-wrap;">' + ingredients + '</div>');
 
             $('#recipe-category').text(category);
             $('#recipe-preparation').text(recipe);

@@ -9,6 +9,3 @@ __pycache__/
 .vscode/
 # baza danych SQLite
 meals.db
-# Pliki konfiguracyjne do konta
-generate_password.py
-generate_user.py
