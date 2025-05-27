@@ -221,7 +221,7 @@
             ingredientsList.append('<div style="white-space: pre-wrap;">' + ingredients + '</div>');
 
             $('#recipe-category').text(category);
-            $('#recipe-preparation').text(recipe);
+            $('#recipe-preparation').html(recipe.replace(/\n/g, '<br>'));
 
             // DODANE: Obsługa linku
             if (goals && goals.trim() !== '') {
