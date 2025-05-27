@@ -177,7 +177,7 @@
                     ingredientsList.append(`<div style="white-space: pre-wrap;">${response.ingredients}</div>`);
 
                     $('#meal-category').text(response.category);
-                    $('#meal-preparation').text(response.recipe);
+                    $('#meal-preparation').html(response.recipe.replace(/\n/g, '<br>'));
 
                     mealDetails.show();
                 },

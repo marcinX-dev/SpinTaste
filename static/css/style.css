@@ -466,7 +466,8 @@ textarea.form-control {
 
 #meal-preparation,
 #recipe-preparation {
-	white-space: pre-wrap !important;
+	line-height: 1.5 !important;
+	word-wrap: break-word !important;
 }
 
 /* ==================== LISTY ==================== */
