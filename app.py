@@ -104,7 +104,8 @@ def random_meal():
                 "name": chosen["name"],
                 "ingredients": chosen["ingredients"],
                 "recipe": chosen["recipe"],
-                "category": chosen["category"]
+                "category": chosen["category"],
+                "goals": chosen["goals"] if chosen["goals"] else "Brak linku"
             }
             return jsonify(meal_data), 200
     except Exception as e:

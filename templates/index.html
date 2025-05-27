@@ -91,7 +91,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="card">
+                            <div class="card mb-3">
                                 <div class="card-header bg-light">
                                     <h5>Kategoria</h5>
                                 </div>
@@ -99,8 +99,28 @@
                                     <p id="meal-category"></p>
                                 </div>
                             </div>
+
+                            <!-- PRZENIESIONA SEKCJA LINK - teraz pod Kategorią -->
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h5>Link</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p id="meal-link"></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="card mt-3">
+                        <div class="card-header bg-light">
+                            <h5>Link</h5>
+                        </div>
+                        <div class="card-body">
+                            <p id="meal-link"></p>
+                        </div>
+                    </div>
+
                     <div class="card mt-3">
                         <div class="card-header bg-light">
                             <h5>Przepis</h5>
@@ -178,6 +198,18 @@
 
                     $('#meal-category').text(response.category);
                     $('#meal-preparation').html(response.recipe.replace(/\n/g, '<br>'));
+
+                    // POPRAWKA: Obsługa linku - używamy response.goals zamiast $(this).data('goals')
+                    const goals = response.goals;
+                    if (goals && goals.trim() !== '') {
+                        if (goals.startsWith('http')) {
+                            $('#meal-link').html(`<a href="${goals}" target="_blank" class="btn btn-sm btn-primary">Otwórz link</a>`);
+                        } else {
+                            $('#meal-link').text(goals);
+                        }
+                    } else {
+                        $('#meal-link').text('Brak linku');
+                    }
 
                     mealDetails.show();
                 },
